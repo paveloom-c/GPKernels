@@ -1,2 +1,5 @@
 # User's Makefile
 Makefile
+
+# Pictures and plots
+*figures
