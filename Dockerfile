@@ -7,6 +7,9 @@ COPY scripts /scripts
 # Allow their execution
 RUN sudo chmod -R +x /scripts
 
+# Install Python packages
+RUN /scripts/user/python/install-python-packages.sh
+
 # Install Julia packages
 RUN /scripts/user/julia/install-julia-packages.sh
 

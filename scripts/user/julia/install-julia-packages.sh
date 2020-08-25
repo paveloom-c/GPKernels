@@ -23,5 +23,5 @@ julia -e 'using Pkg; Pkg.add("Statistics"); using Statistics' >/dev/null 2>&1
 echo '\e[1;36m> Installing `Stheno`...\e[0m'
 julia -e 'using Pkg; Pkg.add("Stheno"); using Stheno' >/dev/null 2>&1
 
-echo '\e[1;36m> Installing `Zygote`...\e[0m'
+echo '\e[1;36m> Installing `Zygote`...\e[0m\n'
 julia -e 'using Pkg; Pkg.add("Zygote"); using Zygote' >/dev/null 2>&1
