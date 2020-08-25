@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter-lab
+  labels:
+    app: jupyter-lab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter-lab
+  template:
+    metadata:
+      labels:
+        app: jupyter-lab
+    spec:
+      containers:
+      - name: c-gpkernels
+        image: paveloom/c-gpkernels:latest
+        ports:
+        - containerPort: 8888
+        command: ["jupyter", "lab", "--ip=0.0.0.0", "--no-browser", "--allow-root"]
+        resources:
+          requests:
+            memory: "8Gi"
+            cpu: "4000m"
+          limits:
+            memory: "8Gi"
+            cpu: "4000m"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: jupyter-lab
+  annotations:
+    dev.okteto.com/auto-ingress: "true"
+spec:
+  type: ClusterIP
+  ports:
+  - name: "jupyter-lab"
+    port: 8888
+  selector:
+    app: jupyter-lab
