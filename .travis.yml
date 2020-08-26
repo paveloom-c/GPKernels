@@ -16,4 +16,4 @@ jobs:
       os: linux
       arch: amd64
       script:
-        - julia docs/make.jl
+        - julia --project=docs docs/make.jl

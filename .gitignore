@@ -1,6 +1,9 @@
 # User's Makefile
 Makefile
 
+# Project manifests
+*Manifest.toml
+
 # Pictures and plots
 *figures
 
