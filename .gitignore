@@ -3,3 +3,8 @@ Makefile
 
 # Pictures and plots
 *figures
+
+# Directories created by Documenter
+docs/build
+docs/site
+docs/generated
