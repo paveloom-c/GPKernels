@@ -17,6 +17,5 @@ jobs:
       arch: amd64
       script:
         - sudo apt-get update
-        - bash .github/scripts/install-nbconvert.bash
         - julia --project=docs/ -e 'using Pkg; Pkg.instantiate()'
         - julia --project=docs docs/make.jl
