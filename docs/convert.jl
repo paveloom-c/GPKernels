@@ -79,7 +79,25 @@ for (index, notebook) in enumerate(notebooks)
 
     end
 
+    # Construct a meta block to change the `Edit on GitHub` URL
+    meta_block = join(
+        [
+            "```@meta",
+            string(
+                "EditURL",
+                " = ",
+                "\"",
+                "https://github.com/paveloom-c/GPKernels/blob/notebooks/",
+                "$notebooks_folder_name/$name/$name.ipynb",
+                "\"",
+            ),
+            "```\n\n",
+        ],
+        '\n',
+    )
+
     open("$md", "w") do io
+        lines[1] = meta_block * lines[1]
         print(io, join(lines, '\n'))
     end
 
