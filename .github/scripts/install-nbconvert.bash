@@ -8,7 +8,7 @@ cyan="\e[1;36m" # Bold cyan
 reset="\e[0m"   # Reset colors
 
 echo -e "\n${cyan}Updating the list of packages...${reset}\n"
-sudo apt-get update
+sudo apt-get update -yq
 
 echo -e "\n${cyan}Installing `python3`...${reset}\n"
 sudo apt-get install -y --no-install-recommends python3-dev
