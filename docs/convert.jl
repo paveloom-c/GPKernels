@@ -1,6 +1,8 @@
 # This file contains a script to convert `*.ipynb` files
 # to Markdown files to further transfer to `Documenter`
 
+@info "ConvertScript: converting notebooks to markdown files."
+
 # Get path to the notebooks folder
 notebooks_folder_name = "notebooks"
 notebooks_folder = normpath(joinpath(@__DIR__, "..", notebooks_folder_name))
@@ -19,7 +21,9 @@ names = replace.(basename.(notebooks), ".ipynb" => "")
 make = joinpath(@__DIR__, "make.jl")
 
 # Go to the output directory
-output_folder = joinpath(@__DIR__, "src", notebooks_folder_name)
+generated_folder = joinpath(@__DIR__, "src", "generated")
+output_folder = joinpath(generated_folder, notebooks_folder_name)
+!isdir(generated_folder) && mkdir(generated_folder)
 !isdir(output_folder) && mkdir(output_folder)
 cd(output_folder)
 

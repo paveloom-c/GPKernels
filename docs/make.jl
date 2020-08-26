@@ -1,6 +1,7 @@
 using Documenter # A package to manage documentation
 
-include()
+# Convert the Jupyter notebooks to Markdown files
+include("convert.jl")
 
 # Create documentation
 makedocs(
@@ -13,12 +14,11 @@ makedocs(
     # Specify the pages on the left side
     pages = [
         "Home" => "index.md",
-        "Notebooks" => map(
-            s -> "$s" => "notebooks/$s/$s.md",
-            [
-                "DSS",
-            ]
-        ),
+        "Notebooks" => [
+            "Kernels" => map(
+                s -> "$s" => "generated/$notebooks_folder_name/$s/$s.md", names,
+            ),
+        ],
     ],
 
     # Specify a format
@@ -26,6 +26,9 @@ makedocs(
         # A fallback for creating docs locally
         prettyurls = get(ENV, "CI", nothing) == "true"
     ),
+
+    # Disable doctests
+    doctest = false,
 
     # Fail if any error occurred
     strict = true,

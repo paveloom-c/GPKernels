@@ -4,7 +4,6 @@ Makefile
 # Pictures and plots
 *figures
 
-# Directories created by Documenter
+# Directories created when generating documentation
 docs/build
-docs/site
-docs/generated
+docs/src/generated
