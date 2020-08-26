@@ -40,5 +40,5 @@ deploydocs(
     repo = "github.com/paveloom-c/GPKernels.git",
 
     # Specify a development branch
-    devbranch = "notebooks",
+    devbranch = "notebooks-update",
 )
