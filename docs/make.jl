@@ -1,5 +1,7 @@
 using Documenter # A package to manage documentation
 
+include()
+
 # Create documentation
 makedocs(
     # Specify a name for the site
@@ -12,14 +14,9 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Notebooks" => map(
-            s -> "notebooks/$(s)",
+            s -> "$s" => "notebooks/$s/$s.md",
             [
-                "Module.md",
-                "Prec.md",
-                "Input.md",
-                "Result.md",
-                "Gen.md",
-                "Extras.md"
+                "DSS",
             ]
         ),
     ],

@@ -15,9 +15,9 @@ using Zygote
 
     Unable to init server: Could not connect: Connection refused
     Unable to init server: Could not connect: Connection refused
-
+    
     (.:314): Gdk-CRITICAL **: 10:36:03.379: gdk_cursor_new_for_display: assertion 'GDK_IS_DISPLAY (display)' failed
-
+    
     (.:314): Gdk-CRITICAL **: 10:36:03.392: gdk_cursor_new_for_display: assertion 'GDK_IS_DISPLAY (display)' failed
 
 
@@ -49,14 +49,14 @@ for lc in star.get_light_curves(short_cadence = false)
 
     # Reading data from a light curve
     data = lc.read()
-
+    
     t₀ = get(data, "TIME")
     f₀ = get(data, "PDCSAP_FLUX")
     fσ₀ = get(data, "PDCSAP_FLUX_ERR")
 
     # Creating a mask for only qualitative data points
     mask = (get(data, "SAP_QUALITY") .== 0) .& isfinite.(t₀) .& isfinite.(f₀)
-
+    
     append!(tₐ, t₀[mask])
     append!(fₐ, f₀[mask])
     append!(fσₐ, fσ₀[mask])
@@ -101,7 +101,7 @@ PyPlot.savefig(joinpath("figures", "TS.pdf"), bbox_inches = "tight")
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_3_0.png)
+![png](DSS_files/DSS_3_0.png)
 
 
 
@@ -134,7 +134,7 @@ for i in range(2, size(t, 1), step = 1)
     push!(Δt, t[i] - t[i-1])
 end
 Δμ = sum(Δt) / size(Δt, 1)
-
+    
 # Printing the mean of the time differences
 println(rpad("Mean of the time differences:", pad), Δμ)
 println(rpad("Log of this mean:", pad), log(Δμ))
@@ -171,7 +171,7 @@ PyPlot.savefig("figures/TS_5.pdf", bbox_inches = "tight")
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_5_0.png)
+![png](DSS_files/DSS_5_0.png)
 
 
 
@@ -197,7 +197,7 @@ PyPlot.savefig("figures/LSP.pdf", bbox_inches = "tight")
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_6_0.png)
+![png](DSS_files/DSS_6_0.png)
 
 
 ```text
@@ -220,7 +220,7 @@ PyPlot.savefig("figures/LSP (log).pdf", bbox_inches = "tight")
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_7_0.png)
+![png](DSS_files/DSS_7_0.png)
 
 
 
@@ -242,7 +242,7 @@ PyPlot.savefig("figures/EQ.pdf", bbox_inches = "tight")
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_8_0.png)
+![png](DSS_files/DSS_8_0.png)
 
 
 
@@ -262,7 +262,7 @@ PyPlot.savefig("figures/Cosine.pdf", bbox_inches = "tight")
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_9_0.png)
+![png](DSS_files/DSS_9_0.png)
 
 
 
@@ -287,7 +287,7 @@ PyPlot.savefig("figures/DSS.pdf", bbox_inches = "tight")
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_10_0.png)
+![png](DSS_files/DSS_10_0.png)
 
 
 
@@ -307,7 +307,7 @@ PyPlot.savefig("figures/DSS (with mean).pdf", bbox_inches = "tight")
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_11_0.png)
+![png](DSS_files/DSS_11_0.png)
 
 
 
@@ -407,13 +407,13 @@ results = Optim.optimize(
     Fminbox
     -------
     Initial mu = 0.0205539
-
+    
     Fminbox iteration 1
     -------------------
     Calling inner optimizer with mu = 0.0205539
-
+    
     (numbers below include barrier contribution)
-    Iter     Function value   Gradient norm
+    Iter     Function value   Gradient norm 
          0     2.119242e+04     3.998282e+02
      * Current step size: 1.0
      * time: 0.0005290508270263672
@@ -469,17 +469,17 @@ results = Optim.optimize(
      * time: 2008.5646300315857
      * g(x): [0.00022072715984079128, 0.09239407363067637, -0.08873356322114034, -0.010149969727027048, 0.004968076858554742]
      * x: [209400.2693498992, 0.5158772919725187, 4.491365332694086, 2.125660475021127e6, 5965.449599526506]
-
+    
     Exiting inner optimizer with x = [209400.2693498992, 0.5158772919725187, 4.491365332694086, 2.125660475021127e6, 5965.449599526506]
     Current distance to box: 0.00863467
     Decreasing barrier term μ.
-
+    
     Fminbox iteration 2
     -------------------
     Calling inner optimizer with mu = 2.05539e-5
-
+    
     (numbers below include barrier contribution)
-    Iter     Function value   Gradient norm
+    Iter     Function value   Gradient norm 
          0     2.118454e+04     2.452979e+00
      * Current step size: 1.0
      * time: 0.0005738735198974609
@@ -535,17 +535,17 @@ results = Optim.optimize(
      * time: 2789.055098056793
      * g(x): [0.00023716858116047722, 6.81640948732196, 1.057409962531879, 0.005396075648282773, 0.0053706542366874065]
      * x: [209399.67931033406, 0.5159260855566354, 4.499994056718684, 2.125679791009689e6, 5950.470619449984]
-
+    
     Exiting inner optimizer with x = [209399.67931033406, 0.5159260855566354, 4.499994056718684, 2.125679791009689e6, 5950.470619449984]
     Current distance to box: 5.94328e-6
     Decreasing barrier term μ.
-
+    
     Fminbox iteration 3
     -------------------
     Calling inner optimizer with mu = 2.05539e-8
-
+    
     (numbers below include barrier contribution)
-    Iter     Function value   Gradient norm
+    Iter     Function value   Gradient norm 
          0     2.118441e+04     6.816609e+00
      * Current step size: 1.0
      * time: 0.0005521774291992188
@@ -601,17 +601,17 @@ results = Optim.optimize(
      * time: 3209.6829771995544
      * g(x): [0.0002386673839069212, 0.004492603121179457, -0.13527065126994442, 3.161749541897711e-5, 0.00555616314953852]
      * x: [209399.3268021077, 0.5154594697713143, 4.49999999105179, 2.1256722871064264e6, 5950.061347921621]
-
+    
     Exiting inner optimizer with x = [209399.3268021077, 0.5154594697713143, 4.49999999105179, 2.1256722871064264e6, 5950.061347921621]
     Current distance to box: 8.94821e-9
     Decreasing barrier term μ.
-
+    
     Fminbox iteration 4
     -------------------
     Calling inner optimizer with mu = 2.05539e-11
-
+    
     (numbers below include barrier contribution)
-    Iter     Function value   Gradient norm
+    Iter     Function value   Gradient norm 
          0     2.118438e+04     2.429959e+00
      * Current step size: 1.0
      * time: 0.0005581378936767578
@@ -667,17 +667,17 @@ results = Optim.optimize(
      * time: 4417.363552093506
      * g(x): [3.7670768250289404e-5, -1.6725747891003822, -2.437469915308116, 0.0014142794255250497, 0.0056067703295328035]
      * x: [209000.0000001023, 0.5152664150907015, 4.499999861004216, 2.1256742144992207e6, 5950.001707474268]
-
+    
     Exiting inner optimizer with x = [209000.0000001079, 0.5152664150906964, 4.499999861004216, 2.1256742144992207e6, 5950.001707474268]
     Current distance to box: 1.07888e-7
     Decreasing barrier term μ.
-
+    
     Fminbox iteration 5
     -------------------
     Calling inner optimizer with mu = 2.05539e-14
-
+    
     (numbers below include barrier contribution)
-    Iter     Function value   Gradient norm
+    Iter     Function value   Gradient norm 
          0     2.118429e+04     2.437618e+00
      * Current step size: 1.0
      * time: 0.0005459785461425781
@@ -703,17 +703,17 @@ results = Optim.optimize(
      * time: 4432.588050842285
      * g(x): [-0.00046797628396082403, 0.0037511644575684367, -2.4298178578264764, 0.0014138094127444656, 0.005568959575535461]
      * x: [209000.00000000003, 0.5153777846397504, 4.499999843102529, 2.125674214497324e6, 5950.0017000005255]
-
+    
     Exiting inner optimizer with x = [209000.00000000003, 0.5153777846398717, 4.499999843102461, 2.1256742144973245e6, 5950.001700002883]
     Current distance to box: 2.91038e-11
     Decreasing barrier term μ.
-
+    
     Fminbox iteration 6
     -------------------
     Calling inner optimizer with mu = 2.05539e-17
-
+    
     (numbers below include barrier contribution)
-    Iter     Function value   Gradient norm
+    Iter     Function value   Gradient norm 
          0     2.118429e+04     2.429818e+00
      * Current step size: 1.0
      * time: 0.0005469322204589844
@@ -734,17 +734,17 @@ results = Optim.optimize(
      * time: 5246.623396873474
      * g(x): [0.00023754433199117477, 0.0037585377261128796, -2.406675946843737, 0.0014138094044477665, 0.0055689593886286675]
      * x: [209000.00000000003, 0.5153777843973287, 4.499999999999999, 2.1256742144973245e6, 5950.001700002523]
-
+    
     Exiting inner optimizer with x = [209000.00000000003, 0.5153777843973287, 4.499999999999999, 2.1256742144973245e6, 5950.001700002523]
     Current distance to box: 8.88178e-16
     Decreasing barrier term μ.
-
+    
     Fminbox iteration 7
     -------------------
     Calling inner optimizer with mu = 2.05539e-20
-
+    
     (numbers below include barrier contribution)
-    Iter     Function value   Gradient norm
+    Iter     Function value   Gradient norm 
          0     2.118429e+04     2.429794e+00
      * Current step size: 1.0
      * time: 0.0005419254302978516
@@ -755,7 +755,7 @@ results = Optim.optimize(
 
     InterruptException:
 
-
+    
 
     Stacktrace:
 
@@ -851,7 +851,7 @@ display(plt)
 ```
 
 
-![svg](DSS.ipynb_files/DSS.ipynb_17_0.svg)
+![svg](DSS_files/DSS_17_0.svg)
 
 
 ```text
@@ -893,7 +893,7 @@ matrix = cov(g(t, 0.05))
      0.0112487   0.0141651   0.0174091  …  0.0         0.0         0.0
      0.00871785  0.0112487   0.0141652     0.0         0.0         0.0
      0.00659375  0.00871784  0.0112487     0.0         0.0         0.0
-     ⋮                                  ⋱  ⋮
+     ⋮                                  ⋱  ⋮                       
      0.0         0.0         0.0           0.0016902   0.00113116  0.000738625
      0.0         0.0         0.0           0.00350586  0.00246426  0.00169019
      0.0         0.0         0.0           0.00659396  0.00486716  0.00350586
@@ -939,7 +939,7 @@ PyPlot.plot(x, y; color)
 ```
 
 
-![png](DSS.ipynb_files/DSS.ipynb_21_0.png)
+![png](DSS_files/DSS_21_0.png)
 
 
 ```text
@@ -1166,4 +1166,4 @@ end
     6990   21207.71186419196
     7000   21208.004291996367
 
-```text
+```

@@ -3,34 +3,41 @@
 
 # Get path to the notebooks folder
 notebooks_folder_name = "notebooks"
-notebooks_folder = joinpath(@__DIR__, "..", notebooks_folder_name)
+notebooks_folder = normpath(joinpath(@__DIR__, "..", notebooks_folder_name))
 
-# Get paths to notebooks
+# Get paths to notebooks and their (base)names
+names = String[]
 notebooks = String[]
 for (root, dirs, files) in walkdir(notebooks_folder)
     for file in files
        endswith(file, ".ipynb") && push!(notebooks, joinpath(root, file))
     end
 end
+names = replace.(basename.(notebooks), ".ipynb" => "")
 
 # Get path to the `make.jl` script
 make = joinpath(@__DIR__, "make.jl")
 
-# Create a temporary directory for converted notebooks
-!isdir("convert") && mkdir("convert")
+# Go to the output directory
+output_folder = joinpath(@__DIR__, "src", notebooks_folder_name)
+!isdir(output_folder) && mkdir(output_folder)
+cd(output_folder)
 
-cd("convert")
-
-for notebook in notebooks
+for (index, notebook) in enumerate(notebooks)
 
     # Get the name of the notebook
-    name = basename(notebook)
+    name = names[index]
+
+    # Go to the folder of the notebook
+    !isdir(name) && mkdir(name)
+    cd(name)
 
     # Construct the name of a Markdown file
     md = "$name.md"
 
     # Convert the notebook to a Markdown file
-    run(`jupyter nbconvert --to markdown $notebook --output-dir . --output $md`)
+    output_cmd_part = ["--output-dir", ".", "--output", "$md", "--log-level", "WARN"]
+    run(`jupyter nbconvert --to markdown $notebook $output_cmd_part`)
 
     # Get the content of the generated Markdown file
     lines = readlines("$md")
@@ -63,12 +70,12 @@ for notebook in notebooks
         end
 
         if inside_output_block && index == last_index
-            lines[index] = "\n```text"
+            lines[index] = "\n```"
         end
 
     end
 
-    open("test.md", "w") do io
+    open("$md", "w") do io
         print(io, join(lines, '\n'))
     end
 
