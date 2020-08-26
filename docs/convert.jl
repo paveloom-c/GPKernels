@@ -79,18 +79,11 @@ for (index, notebook) in enumerate(notebooks)
 
     end
 
-    # Construct a meta block to change the `Edit on GitHub` URL
+    # Construct a meta block to hide the `Edit on GitHub` URL
     meta_block = join(
         [
             "```@meta",
-            string(
-                "EditURL",
-                " = ",
-                "\"",
-                "https://github.com/paveloom-c/GPKernels/blob/notebooks/",
-                "$notebooks_folder_name/$name/$name.ipynb",
-                "\"",
-            ),
+            "EditURL = \"nothing\"",
             "```\n\n",
         ],
         '\n',
