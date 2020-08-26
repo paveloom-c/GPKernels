@@ -1,0 +1,19 @@
+language: julia
+dist: bionic
+
+notifications:
+  email: false
+
+branches:
+  only:
+  - notebooks
+  - notebooks-update
+
+jobs:
+  include:
+    - name: "Documentation Build, Julia 1.5 (Linux, x64)"
+      julia: 1.5
+      os: linux
+      arch: amd64
+      script:
+        - julia docs/make.jl
