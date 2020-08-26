@@ -4,6 +4,10 @@ dist: bionic
 notifications:
   email: false
 
+env:
+  global:
+    - PATH=/opt/python/3.8.1/bin:$PATH
+
 branches:
   only:
   - notebooks
@@ -16,7 +20,6 @@ jobs:
       os: linux
       arch: amd64
       script:
-        - ls /opt/python
         - bash .github/scripts/install-nbconvert.bash
         - julia --project=docs/ -e 'using Pkg; Pkg.instantiate()'
         - julia --project=docs docs/make.jl
