@@ -1,0 +1,24 @@
+language: julia
+dist: bionic
+
+notifications:
+  email: false
+
+env:
+  global:
+    - PATH=/opt/python/3.8.1/bin:$PATH
+
+branches:
+  only:
+  - notebooks
+
+jobs:
+  include:
+    - name: "Documentation Build, Julia 1.5 (Linux, x64)"
+      julia: 1.5
+      os: linux
+      arch: amd64
+      script:
+        - bash .github/scripts/install-nbconvert.bash
+        - julia --project=docs/ -e 'using Pkg; Pkg.instantiate()'
+        - julia --project=docs docs/make.jl

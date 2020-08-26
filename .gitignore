@@ -1,5 +1,12 @@
 # User's Makefile
 Makefile
 
+# Project manifests
+*Manifest.toml
+
 # Pictures and plots
 *figures
+
+# Directories created when generating documentation
+docs/build
+docs/src/generated
