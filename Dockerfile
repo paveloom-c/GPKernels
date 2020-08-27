@@ -5,7 +5,7 @@ FROM paveloom/binder-base:0.1.1 as fitsio
 USER root
 
 # Copy the scripts to the root
-COPY build-scripts /scripts
+COPY fitsio-scripts /scripts
 
 # Allow their execution
 RUN chmod -R +x /scripts
@@ -20,7 +20,7 @@ USER $USER
 RUN /scripts/user/fitsio/install-fitsio.sh
 
 # Base image for the main stage
-FROM paveloom/binder-julia-plots:0.1.0
+FROM paveloom/binder-julia-plots:0.1.0 as main
 
 # Copy the `fitsio` package
 COPY --from=fitsio $HOME/.local/lib/python3.8/site-packages/fitsio $HOME/.local/lib/python3.8/site-packages/fitsio
@@ -37,5 +37,5 @@ RUN /scripts/user/python/install-python-packages.sh
 # Install Julia packages
 RUN /scripts/user/julia/install-julia-packages.sh
 
-# Remove scripts
+# Delete the scripts
 RUN sudo rm -rf /scripts
