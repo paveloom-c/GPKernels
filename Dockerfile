@@ -35,7 +35,7 @@ RUN sudo chmod -R +x /scripts
 RUN /scripts/user/python/install-python-packages.sh
 
 # Install Julia packages
-# RUN /scripts/user/julia/install-julia-packages.sh
+RUN /scripts/user/julia/install-julia-packages.sh
 
 # Remove scripts
 RUN sudo rm -rf /scripts
