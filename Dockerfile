@@ -1,5 +1,5 @@
 # Base image for the build stage
-FROM paveloom/binder-base:0.1.1 as fitsio
+FROM paveloom/binder-base:0.1.2 AS fitsio
 
 # Switch to the `root` user
 USER root
@@ -20,10 +20,10 @@ USER $USER
 RUN /scripts/user/fitsio/install-fitsio.sh
 
 # Base image for the main stage
-FROM paveloom/binder-julia-plots:0.1.0 as main
+FROM paveloom/binder-julia-plots:0.1.1 AS main
 
 # Copy the `fitsio` package
-COPY --from=fitsio $HOME/.local/lib/python3.8/site-packages/fitsio $HOME/.local/lib/python3.8/site-packages/fitsio
+COPY --from=fitsio --chown=$USER:$USER $HOME/.local/lib/python3.8/site-packages/fitsio $HOME/.local/lib/python3.8/site-packages/fitsio
 
 # Copy the scripts to the root
 COPY main-scripts /scripts
