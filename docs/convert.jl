@@ -10,12 +10,17 @@ notebooks_folder = normpath(joinpath(@__DIR__, "..", notebooks_folder_name))
 # Get paths to notebooks and their (base)names
 names = String[]
 notebooks = String[]
+preambles = String[]
 for (root, dirs, files) in walkdir(notebooks_folder)
     for file in files
-       endswith(file, ".ipynb") && push!(notebooks, joinpath(root, file))
+        if endswith(file, ".ipynb")
+            name = replace(basename(file), ".ipynb" => "")
+            push!(notebooks, joinpath(root, file))
+            push!(names, name)
+            contains(name, "KIC") && push!(preambles, name)
+        end
     end
 end
-names = replace.(basename.(notebooks), ".ipynb" => "")
 
 # Get path to the `make.jl` script
 make = joinpath(@__DIR__, "make.jl")
@@ -32,9 +37,20 @@ for (index, notebook) in enumerate(notebooks)
     # Get the name of the notebook
     name = names[index]
 
-    # Go to the folder of the notebook
-    !isdir(name) && mkdir(name)
-    cd(name)
+    # Determine the preamble
+    for preamble in preambles
+        if name == preamble
+            !isdir(name) && mkdir(name)
+            cd(name)
+            break
+        elseif count(preamble, notebook) == 1
+            !isdir(preamble) && mkdir(preamble)
+            cd(preamble)
+            !isdir(name) && mkdir(name)
+            cd(name)
+            break
+        end
+    end
 
     # Construct the name of a Markdown file
     md = "$name.md"
@@ -89,9 +105,13 @@ for (index, notebook) in enumerate(notebooks)
         '\n',
     )
 
+    # Write the meta block
     open("$md", "w") do io
         lines[1] = meta_block * lines[1]
         print(io, join(lines, '\n'))
     end
+
+    # Go back to the output folder
+    cd(output_folder)
 
 end
