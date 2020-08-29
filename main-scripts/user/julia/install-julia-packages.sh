@@ -8,6 +8,9 @@ julia -e 'using IJulia; installkernel("Julia (4 threads)", env=Dict("JULIA_NUM_T
 echo '\e[1;36m> Installing `LombScargle`...\e[0m'
 julia -e 'using Pkg; Pkg.add("LombScargle"); using LombScargle' >/dev/null 2>&1
 
+echo '\e[1;36m> Installing `NBInclude`...\e[0m'
+julia -e 'using Pkg; Pkg.add("NBInclude"); using NBInclude' >/dev/null 2>&1
+
 echo '\e[1;36m> Installing `Optim`...\e[0m'
 julia -e 'using Pkg; Pkg.add("Optim"); using Optim' >/dev/null 2>&1
 
