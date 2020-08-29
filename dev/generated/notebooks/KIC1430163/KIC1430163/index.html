@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Preamble · GPKernels</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../../assets/documenter.js"></script><script src="../../../../siteinfo.js"></script><script src="../../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">GPKernels</span></div><form class="docs-search" action="../../../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../../../">Home</a></li><li><span class="tocitem">Notebooks</span><ul><li><input class="collapse-toggle" id="menuitem-2-1" type="checkbox" checked/><label class="tocitem" for="menuitem-2-1"><span class="docs-label">KIC1430163</span><i class="docs-chevron"></i></label><ul class="collapsed"><li class="is-active"><a class="tocitem" href>Preamble</a></li><li><a class="tocitem" href="../EQP/EQP/">EQP</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Notebooks</a></li><li><a class="is-disabled">KIC1430163</a></li><li class="is-active"><a href>Preamble</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Preamble</a></li></ul></nav><div class="docs-right"><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><pre><code class="language-julia">using LombScargle
+using Optim
+using PyCall
+using PyPlot
+using Soss
+using Statistics
+using Stheno
+using Stheno: Kernel
+using Zygote</code></pre><pre><code class="language-julia"># Import the Python package to
+# interact with Kepler Archive data
+kplr = pyimport(&quot;kplr&quot;)
+
+# The ID of a star from the Kepler Input Catalog
+KIC_ID = 1430163
+
+# Attach the `kplr` API
+client = kplr.API()
+
+# Get the data
+star = client.star(KIC_ID)
+
+# Time values
+tₐ = Vector{Float64}()
+
+# Pre-search Data Conditioning Simple Aperture Photometry (PDCSAP) flux values
+fₐ = Vector{Float32}()
+
+# The 1-sigma errors in PDC flux values
+fσₐ = Vector{Float32}()
+
+# Get long cadence data of the light curves
+for lc in star.get_light_curves(short_cadence = false)
+
+    # Read data from a light curve
+    data = lc.read()
+    
+    t₀ = get(data, &quot;TIME&quot;)
+    f₀ = get(data, &quot;PDCSAP_FLUX&quot;)
+    fσ₀ = get(data, &quot;PDCSAP_FLUX_ERR&quot;)
+
+    # Create a mask for only qualitative data points
+    mask = (get(data, &quot;SAP_QUALITY&quot;) .== 0) .&amp; isfinite.(t₀) .&amp; isfinite.(f₀)
+    
+    append!(tₐ, t₀[mask])
+    append!(fₐ, f₀[mask])
+    append!(fσₐ, fσ₀[mask])
+
+end</code></pre><pre><code class="language-julia"># Get access to rcParams
+rcP = PyPlot.PyDict(PyPlot.matplotlib.&quot;rcParams&quot;)
+
+# Set DPI
+rcP[&quot;savefig.dpi&quot;] = 300
+rcP[&quot;figure.dpi&quot;] = 300
+
+# Activate TeX support
+rcP[&quot;text.usetex&quot;] = true
+
+# Activate languages support
+rcP[&quot;text.latex.preamble&quot;] = raw&quot;\usepackage[main=english]{babel}&quot;
+
+# Switch to Computer Modern font set
+rcP[&quot;mathtext.fontset&quot;] = &quot;cm&quot;
+
+# Set font sizes
+rcP[&quot;font.size&quot;] = 18
+rcP[&quot;legend.fontsize&quot;] = 12;
+
+color = &quot;#425378&quot;;</code></pre><pre><code class="language-julia">plot(tₐ, fₐ, color)
+
+xlabel(L&quot;\textrm{Time, days}&quot;)
+ylabel(L&quot;\textrm{Flux}&quot;)
+title(latexstring(&quot;\\textrm{Time Series of KIC $KIC_ID}&quot;))
+
+savefig(joinpath(&quot;figures&quot;, &quot;TS.pdf&quot;), bbox_inches = &quot;tight&quot;)</code></pre><p><img src="../KIC1430163_files/KIC1430163_3_0.png" alt="png"/></p><pre><code class="language-julia">mask = (tₐ .≥ 443.5105) .&amp; (tₐ .≤ 537.5502295)
+
+tₘ = tₐ[mask]
+const t = tₘ .- mean(tₘ)
+const f = fₐ[mask]
+const fσ = fσₐ[mask]
+
+pad = 30
+
+# Printing the size of the subset
+println(rpad(&quot;Size of the subset:&quot;, pad), size(t, 1))
+
+# Printing the mean of the flux
+const μ₀ = mean(f)
+println(rpad(&quot;Mean of the flux: &quot;, pad), μ₀)
+println(rpad(&quot;Log of this mean: &quot;, pad), log(μ₀))
+
+# Printing the variance of the subset
+const σ²₀ = var(f)
+println(rpad(&quot;Variance of the subset: &quot;, pad), σ²₀)
+println(rpad(&quot;Log of this variance: &quot;, pad), log(σ²₀))
+
+# Calculating the mean of the time differences between observations
+Δt = []
+for i in range(2, size(t, 1), step = 1)
+    push!(Δt, t[i] - t[i-1])
+end
+Δμ = sum(Δt) / size(Δt, 1)
+    
+# Printing the mean of the time differences
+println(rpad(&quot;Mean of the time differences:&quot;, pad), Δμ)
+println(rpad(&quot;Log of this mean:&quot;, pad), log(Δμ))
+println(rpad(&quot;1 / Log of this mean:&quot;, pad), 1 / log(Δμ))</code></pre><pre><code class="language-text">
+    Size of the subset:           3518
+    Mean of the flux:             2.125678e6
+    Log of this mean:             14.569601
+    Variance of the subset:       209401.3
+    Log of this variance:         12.2520075
+    Mean of the time differences: 0.026616617260856176
+    Log of this mean:             -3.626219549189213
+    1 / Log of this mean:         -0.2757692926297279
+
+</code></pre><pre><code class="language-julia">close()
+plot(t, f, color)
+
+# Add labels
+xlabel(L&quot;\textrm{Time, days}&quot;)
+ylabel(L&quot;\textrm{Flux}&quot;)
+
+# Add a title
+title(L&quot;\textrm{Time Series of the 5th Quarter}&quot;)
+
+# Save the figure
+savefig(&quot;figures/TS_5.pdf&quot;, bbox_inches = &quot;tight&quot;)</code></pre><p><img src="../KIC1430163_files/KIC1430163_5_0.png" alt="png"/></p><pre><code class="language-julia">frequencies = range(1 / size(t, 1) + 0.0003, 1.0; length = 5000)
+plan = LombScargle.plan(t, f, fσ; frequencies)
+
+p = lombscargle(plan)
+ν, P = freqpower(p)
+νₘ = findmaxfreq(p)[1]
+P₀ = 1 / νₘ
+
+println(&quot;The peak is at $(νₘ).&quot;)
+println(&quot;The relevant estimate of the period is $(P₀).&quot;)
+
+close()
+plot(ν, P; color)
+
+title(L&quot;\textrm{Lomb-Scargle Periodogram}&quot;)
+xlabel(L&quot;\textrm{Frequency, days}^{-1}&quot;)
+ylabel(L&quot;\textrm{Power}&quot;)
+
+savefig(&quot;figures/LSP.pdf&quot;, bbox_inches = &quot;tight&quot;)</code></pre><p><img src="../KIC1430163_files/KIC1430163_6_0.png" alt="png"/></p><pre><code class="language-text">
+    The peak is at 0.2222990081813975.
+    The relevant estimate of the period is 4.498445621421726.
+
+</code></pre><pre><code class="language-julia">close()
+plot(ν, P; color)
+
+title(L&quot;\textrm{Lomb-Scargle Periodogram}&quot;)
+xlabel(L&quot;\textrm{Frequency (log scale), days}^{-1}&quot;)
+ylabel(L&quot;\textrm{Power}&quot;)
+xscale(&quot;log&quot;)
+
+savefig(&quot;figures/LSP (log).pdf&quot;, bbox_inches = &quot;tight&quot;)</code></pre><p><img src="../KIC1430163_files/KIC1430163_7_0.png" alt="png"/></p><pre><code class="language-julia">close()</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../../../">« Home</a><a class="docs-footer-nextpage" href="../EQP/EQP/">EQP »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Saturday 29 August 2020 16:09">Saturday 29 August 2020</span>. Using Julia version 1.5.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
