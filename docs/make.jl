@@ -15,9 +15,19 @@ makedocs(
     pages = [
         "Home" => "index.md",
         "Notebooks" => [
-            "Kernels" => map(
-                s -> "$s" => "generated/$notebooks_folder_name/$s/$s.md", names,
-            ),
+            "$preamble" => pushfirst!(
+                map(
+                    s -> "$s" => "generated/$notebooks_folder_name/$preamble/$s/$s.md",
+                    replace.(
+                        basename.(
+                            filter(notebook -> count(preamble, notebook) == 1, notebooks)
+                        ),
+                        ".ipynb" => ""
+                    ),
+                ),
+                "Preamble" => "generated/$notebooks_folder_name/$preamble/$preamble.md",
+            )
+            for preamble in preambles
         ],
     ],
 
