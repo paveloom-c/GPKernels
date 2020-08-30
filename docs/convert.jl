@@ -189,8 +189,21 @@ for (index, notebook) in enumerate(notebooks)
 
             # Condition of exiting an output block (code block)
             if inside_output_block
-                lines[index - 1] = "```\n"
+
+                # Condition of placing the end of a spoiler (before a block of code)
+                if about_kernel && code_block == 4
+                    lines[index - 1] = """
+                    ```
+                    ```@raw html
+                    </details><br>
+                    ```
+                    """
+                else
+                    lines[index - 1] = "```\n"
+                end
+
                 inside_output_block = false
+
             end
 
             # Insert a Markdown line if it is defined for the current cell
@@ -208,7 +221,7 @@ for (index, notebook) in enumerate(notebooks)
         elseif !inside_interrupt_exception && inside_output_block #=
             =# && line == "    InterruptException:"
 
-            # Condition to place the end of the spoiler
+            # Condition of placing the end of a spoiler (before an interrupt exception)
             if about_kernel && code_block == 4
                 lines[index - 1] = """
                 ```
@@ -228,7 +241,7 @@ for (index, notebook) in enumerate(notebooks)
         # Condition of exiting an output block (Markdown line)
         elseif inside_output_block && !isempty(line) && !startswith(line, "    ")
 
-            # Condition to place the end of the spoiler
+            # Condition of placing the end of a spoiler (before a Markdown line)
             if about_kernel && code_block == 4
                 lines[index - 1] = """
                 ```
@@ -246,7 +259,7 @@ for (index, notebook) in enumerate(notebooks)
         elseif !inside_output_block && !inside_julia_block && !inside_interrupt_exception #=
             =# && startswith(line, "    ")
 
-            # Condition to place the start of the spoiler
+            # Condition of placing the start of a spoiler
             if about_kernel && code_block == 4
                 lines[index - 1] = """
                 ```@raw html
@@ -261,7 +274,7 @@ for (index, notebook) in enumerate(notebooks)
 
             inside_output_block = true
 
-        # Condition on the last line of the last block of output
+        # Condition of getting the last line of the last block of output
         elseif inside_output_block && index == last_index
 
             lines[index] = "\n```"
