@@ -81,11 +81,27 @@ md_lines_preamble = Dict{Int, String}(
 md_lines_kernel = Dict{Int, String}(
     [
         1 => """
-        Hi-ho!
+        Let's execute the preamble in the current scope. Text output will go here as a
+        brief reminder of the input data.
         """,
 
         2 => """
-        Girls just wanna have some fun!
+        Let's define a function for calculating the negative log marginal likelihood and an
+        auxiliary function for unpacking the tuple of parameters. See the `IDs` page on the
+        sidebar for decrypting model IDs.
+        """,
+
+        3 => """
+        Initial values can be quite important in the optimization process, so it is
+        advisable to set them well. Fortunately, a small manual selection with creating the
+        plot can help in this. Let's try to choose such parameters that a realization
+        of the Gaussian process is similar to the original time series.
+        """,
+
+        4 => """
+        Finally, let's optimize the negative log marginal likelihood function. This process
+        can take quite a lot of time (it was likely aborted manually at some point), so the
+        output of the optimizer is very large and therefore placed under the spoiler.
         """,
     ]
 )
