@@ -121,6 +121,9 @@ for (index, notebook) in enumerate(notebooks)
     # Initialize an empty Markdown lines set
     md_lines = Dict{Int, String}()
 
+    # A flag showing whether current notebook is about a kernel
+    about_kernel = false
+
     # Determine the preamble
     for preamble in preambles
         if name == preamble
@@ -145,6 +148,8 @@ for (index, notebook) in enumerate(notebooks)
             # Choose a Markdown lines set
             md_lines = md_lines_kernel
 
+            about_kernel = true
+
             break
 
         end
@@ -163,48 +168,113 @@ for (index, notebook) in enumerate(notebooks)
     # Initialize auxiliary variables
     inside_julia_block = false
     inside_output_block = false
+    inside_interrupt_exception = false
     last_index = size(lines, 1)
 
     # Initialize the code block counter
     code_block = 0
 
-    # Put the text output in the text blocks
+    # Put the text output in the text blocks (and more!)
     for (index, line) in enumerate(lines)
 
-        # Condition of entering the code block
-        if startswith(line, "```julia") && !inside_julia_block
+        # Condition of being inside an interrupt exception block
+        if inside_interrupt_exception && startswith(line, "    ")
+
+            lines[index] = ""
+
+        # Condition of entering a code block
+        elseif startswith(line, "```julia") && !inside_julia_block
 
             code_block += 1
 
-            # Condition to complete the output block
+            # Condition of exiting an output block (code block)
             if inside_output_block
-                lines[index - 1] = "```\n"
+
+                # Condition of placing the end of a spoiler (before a block of code)
+                if about_kernel && code_block == 4
+                    lines[index - 1] = """
+                    ```
+                    ```@raw html
+                    </details><br>
+                    ```
+                    """
+                else
+                    lines[index - 1] = "```\n"
+                end
+
                 inside_output_block = false
+
             end
 
             # Insert a Markdown line if it is defined for the current cell
             lines[index] = get(md_lines, code_block, "") * '\n' * lines[index]
 
+            inside_interrupt_exception = false
             inside_julia_block = true
 
-        # Condition of exiting the code block
+        # Condition of exiting a code block
         elseif startswith(line, "```") && inside_julia_block
 
             inside_julia_block = false
 
-        # Condition to complete the output block
+        # Condition of entering a block of interrupt exception
+        elseif !inside_interrupt_exception && inside_output_block #=
+            =# && line == "    InterruptException:"
+
+            # Condition of placing the end of a spoiler (before an interrupt exception)
+            if about_kernel && code_block == 4
+                lines[index - 1] = """
+                ```
+                ```@raw html
+                </details><br>
+                ```
+                """
+            else
+                lines[index - 1] = "```\n"
+            end
+
+            lines[index] = ""
+
+            inside_output_block = false
+            inside_interrupt_exception = true
+
+        # Condition of exiting an output block (Markdown line)
         elseif inside_output_block && !isempty(line) && !startswith(line, "    ")
 
-            lines[index - 1] = "```\n"
+            # Condition of placing the end of a spoiler (before a Markdown line)
+            if about_kernel && code_block == 4
+                lines[index - 1] = """
+                ```
+                ```@raw html
+                </details><br>
+                ```
+                """
+            else
+                lines[index - 1] = "```\n"
+            end
+
             inside_output_block = false
 
-        # Condition for starting the output block
-        elseif !inside_output_block && !inside_julia_block  && startswith(line, "    ")
+        # Condition of entering an output block
+        elseif !inside_output_block && !inside_julia_block && !inside_interrupt_exception #=
+            =# && startswith(line, "    ")
 
-            lines[index - 1] = "\n```text\n"
+            # Condition of placing the start of a spoiler
+            if about_kernel && code_block == 4
+                lines[index - 1] = """
+                ```@raw html
+                <details>
+                <summary>Optimizer output</summary>
+                ```
+                ```text
+                """
+            else
+                lines[index - 1] = "\n```text\n"
+            end
+
             inside_output_block = true
 
-        # Condition on the last line of the last block of output
+        # Condition of getting the last line of the last block of output
         elseif inside_output_block && index == last_index
 
             lines[index] = "\n```"
