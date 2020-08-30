@@ -121,6 +121,9 @@ for (index, notebook) in enumerate(notebooks)
     # Initialize an empty Markdown lines set
     md_lines = Dict{Int, String}()
 
+    # A flag showing whether current notebook is about a kernel
+    about_kernel = false
+
     # Determine the preamble
     for preamble in preambles
         if name == preamble
@@ -144,6 +147,8 @@ for (index, notebook) in enumerate(notebooks)
 
             # Choose a Markdown lines set
             md_lines = md_lines_kernel
+
+            about_kernel = true
 
             break
 
@@ -195,13 +200,36 @@ for (index, notebook) in enumerate(notebooks)
         # Condition to complete the output block
         elseif inside_output_block && !isempty(line) && !startswith(line, "    ")
 
-            lines[index - 1] = "```\n"
+            # Condition to place the end of the spoiler
+            if about_kernel && code_block == 4
+                lines[index - 1] = """
+                ```
+                ```@raw html
+                </details><br>
+                ```
+                """
+            else
+                lines[index - 1] = "```\n"
+            end
+
             inside_output_block = false
 
         # Condition for starting the output block
         elseif !inside_output_block && !inside_julia_block  && startswith(line, "    ")
 
-            lines[index - 1] = "\n```text\n"
+            # Condition to place the start of the spoiler
+            if about_kernel && code_block == 4
+                lines[index - 1] = """
+                ```@raw html
+                <details>
+                <summary>Optimizer output</summary>
+                ```
+                ```text
+                """
+            else
+                lines[index - 1] = "\n```text\n"
+            end
+
             inside_output_block = true
 
         # Condition on the last line of the last block of output
