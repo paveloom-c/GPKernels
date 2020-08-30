@@ -29,11 +29,51 @@ make = joinpath(@__DIR__, "make.jl")
 md_lines_preamble = Dict{Int, String}(
     [
         1 => """
-        Hello there!
+        Let's add a couple of packages. If you try this out, know that they take up a
+        pretty decent amount of memory.
         """,
 
         2 => """
-        Good to see ya!
+        Now let's get the data from the
+        [Kepler Archive](https://archive.stsci.edu/kepler/data_search/search.php).
+        To make it easier, let's use the Python's [`kplr`](https://github.com/dfm/kplr)
+        package:
+        """,
+
+        3 => """
+        It's useful to look at this data, but before that let's make the plots a little
+        prettier. It's never harmful.
+        """,
+
+        4 => """
+        Okay, now all the power of TeX is under our control. Let's make that plot then:
+        """,
+
+        5 => """
+        These sharp leaps are associated with the inconsistency of observational periods.
+        Let's pick one of the quarters:
+        """,
+
+        6 => """
+        That will be enough. Let's look at the time series:
+        """,
+
+        7 => """
+        Gaussian processes are cool, of course, but the models they will use will require
+        initial values. Some of these have already been identified before (mean and
+        variance), but we will also need an estimate of the period. Let's go the classic
+        way and make this estimate by determining the peak position on the Lomb-Scargle
+        periodogram.
+        """,
+
+        8 => """
+        Here's another look at it, just with a logarithmic scale:
+        """,
+
+        9 => """
+        Yeah, close the plot. It's just good practice. This ends the preamble to this
+        object, and we can now proceed with tests of different models for Gaussian
+        processes. Click on any of the model IDs in the sidebar to continue.
         """,
     ]
 )
