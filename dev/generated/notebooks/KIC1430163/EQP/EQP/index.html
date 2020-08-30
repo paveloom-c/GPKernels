@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>EQP · GPKernels</title><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../../../../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../../../../assets/documenter.js"></script><script src="../../../../../siteinfo.js"></script><script src="../../../../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../../../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../../../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit">GPKernels</span></div><form class="docs-search" action="../../../../../search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li><a class="tocitem" href="../../../../../">Home</a></li><li><span class="tocitem">Notebooks</span><ul><li><input class="collapse-toggle" id="menuitem-2-1" type="checkbox" checked/><label class="tocitem" for="menuitem-2-1"><span class="docs-label">KIC1430163</span><i class="docs-chevron"></i></label><ul class="collapsed"><li><a class="tocitem" href="../../KIC1430163/">Preamble</a></li><li class="is-active"><a class="tocitem" href>EQP</a></li></ul></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Notebooks</a></li><li><a class="is-disabled">KIC1430163</a></li><li class="is-active"><a href>EQP</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>EQP</a></li></ul></nav><div class="docs-right"><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><p>Let&#39;s execute the preamble in the current scope. Text output will go here as a brief reminder of the input data.</p><pre><code class="language-julia">using NBInclude
 @nbinclude(&quot;KIC1430163.ipynb&quot;)</code></pre><pre><code class="language-text">
+    General info:                 
     Size of the subset:           3518
     Mean of the flux:             2.125678e6
-    Log of this mean:             14.569601
     Variance of the subset:       209401.3
-    Log of this variance:         12.2520075
     Mean of the time differences: 0.026616617260856176
-    Log of this mean:             -3.626219549189213
-    1 / Log of this mean:         -0.2757692926297279
+    Lomb–Scargle periodogram:
     The peak is at 0.2222990081813975.
     The relevant estimate of the period is 4.498445621421726.
 
-</code></pre><p>Let&#39;s define a function for calculating the negative log marginal likelihood and an auxiliary function for unpacking the tuple of parameters. See the <code>IDs</code> page on the sidebar for decrypting model IDs.</p><pre><code class="language-julia">function unpack(θ)
+</code></pre><p>Let&#39;s define a function for calculating the negative log marginal likelihood and an auxiliary function for unpacking the tuple of parameters. See the <code>IDs</code> page on the sidebar for decrypting model IDs.</p><pre><code class="language-julia"># Unpack a tuple of parameters
+function unpack(θ)
     A = θ[1]
     l = θ[2]
     P = θ[3]
@@ -21,22 +20,28 @@
     return A, l, P, μ, σ²
 end
 
+# Calculate the negative log marginal likelihood
 function nlml(θ)
     A, l, P, μ, σ² = unpack(θ)
-    k = A * stretch(EQ(), 1 / l^2) * Stheno.Cosine(P / 2)
+    k = A * stretch(Stheno.EQ(), 1 / l^2) * Stheno.Cosine(P / 2)
     g = GP(μ, k, GPC())
     return -logpdf(g(t, σ²), f)
 end
-;</code></pre><p>Initial values can be quite important in the optimization process, so it is advisable to set them well. Fortunately, a small manual selection with creating the plot can help in this. Let&#39;s try to choose such parameters that a realization of the Gaussian process is similar to the original time series.</p><pre><code class="language-julia">Aₜ = σ²₀
+;</code></pre><p>Initial values can be quite important in the optimization process, so it is advisable to set them well. Fortunately, a small manual selection with creating the plot can help in this. Let&#39;s try to choose such parameters that a realization of the Gaussian process is similar to the original time series.</p><pre><code class="language-julia"># Select the trial parameters
+Aₜ = σ²₀
 lₜ = 0.60
 Pₜ = P₀
 μₜ = μ₀
 σ²ₜ = 5500
 
+# Create a kernel
 EQP = Aₜ * stretch(Stheno.EQ(), 1 / lₜ^2) * Stheno.Cosine(Pₜ / 2)
 
+# Create a Gaussian process
 g = GP(μₜ, EQP, GPC())
 
+# Take the values of one of the Gaussian process realizations
+# on the time values of the original time series
 x = t
 y = rand(g(x, σ²ₜ))
 
@@ -46,15 +51,18 @@ title(L&quot;\textrm{A trial plot for the EQP kernel}&quot;)
 xlabel(L&quot;\textrm{x}&quot;)
 ylabel(L&quot;\textrm{y}&quot;)
 
-savefig(&quot;figures/EQ.pdf&quot;, bbox_inches = &quot;tight&quot;)
-
 θ = [Aₜ, lₜ, Pₜ, μₜ, σ²ₜ]
 println(&quot;Negative log marginal likelihood: &quot;, nlml(θ))</code></pre><p><img src="../EQP_files/EQP_2_0.png" alt="png"/></p><pre><code class="language-text">
     Negative log marginal likelihood: 21253.239040160737
 
-</code></pre></details><br><p>Finally, let&#39;s optimize the negative log marginal likelihood function. This process can take quite a lot of time (it was likely aborted manually at some point), so the output of the optimizer is very large and therefore placed under the spoiler.</p><pre><code class="language-julia">θ₀ = [σ²₀, 0.55, 3.88, μ₀, 6000]
+</code></pre></details><br><p>Finally, let&#39;s optimize the negative log marginal likelihood function. This process can take quite a lot of time (it was likely aborted manually at some point), so the output of the optimizer is very large and therefore placed under the spoiler.</p><pre><code class="language-julia"># Collect a parameters vector
+θ₀ = [σ²₀, 0.55, 3.88, μ₀, 6000]
+
+# Define the lower and upper boundaries, respectively
 θₗ = [209000.0, 0.45, 3.0, 2125650.0, 5950.0]
 θᵤ = [210000.0, 0.7, 4.5, 2125750.0, 6050.0]
+
+# Optimize the negative log marginal likelihood function
 results = Optim.optimize(
     nlml,
     θ-&gt;Zygote.gradient(nlml, θ)[1],
@@ -418,67 +426,10 @@ results = Optim.optimize(
      * g(x): [0.00023824985260963784, 0.0037585377261130826, -2.4297944464695354, 0.0014138094044477672, 0.0055689593886407455]
      * x: [209000.00000000003, 0.5153777843973287, 4.499999999999999, 2.1256742144973245e6, 5950.001700002523]
 
-</code></pre></details><br><p>The following cells will be removed later.</p><pre><code class="language-julia">using LinearAlgebra</code></pre><pre><code class="language-julia">θ₀ = [0.03782039385618707, 27.800588611994993, 4.025972513638813 / 2]
-g = Stheno.GP(θ₀[1] * EQC(θ₀[2]) * Stheno.Cosine(θ₀[3]), Stheno.GPC())
-
-matrix = cov(g(t, 0.05))</code></pre><pre><code class="language-text">
-    3518×3518 Array{Float64,2}:
-     0.0878204   0.0373649   0.036031   …  0.0         0.0         0.0
-     0.0373649   0.0878204   0.0373649     0.0         0.0         0.0
-     0.036031    0.0373649   0.0878204     0.0         0.0         0.0
-     0.0339126   0.036031    0.0373649     0.0         0.0         0.0
-     0.0311543   0.0339126   0.036031      0.0         0.0         0.0
-     0.0279346   0.0311543   0.0339126  …  0.0         0.0         0.0
-     0.0244473   0.0279346   0.0311543     0.0         0.0         0.0
-     0.0208823   0.0244473   0.0279346     0.0         0.0         0.0
-     0.0174091   0.0208823   0.0244473     0.0         0.0         0.0
-     0.0141651   0.0174091   0.0208823     0.0         0.0         0.0
-     0.0112487   0.0141651   0.0174091  …  0.0         0.0         0.0
-     0.00871785  0.0112487   0.0141652     0.0         0.0         0.0
-     0.00659375  0.00871784  0.0112487     0.0         0.0         0.0
-     ⋮                                  ⋱  ⋮                       
-     0.0         0.0         0.0           0.0016902   0.00113116  0.000738625
-     0.0         0.0         0.0           0.00350586  0.00246426  0.00169019
-     0.0         0.0         0.0           0.00659396  0.00486716  0.00350586
-     0.0         0.0         0.0           0.00871806  0.00659395  0.00486715
-     0.0         0.0         0.0        …  0.0112489   0.00871806  0.00659394
-     0.0         0.0         0.0           0.0174093   0.0141654   0.0112489
-     0.0         0.0         0.0           0.0208825   0.0174093   0.0141654
-     0.0         0.0         0.0           0.0311544   0.0279347   0.0244474
-     0.0         0.0         0.0           0.036031    0.0339127   0.0311544
-     0.0         0.0         0.0        …  0.0878204   0.0373649   0.036031
-     0.0         0.0         0.0           0.0373649   0.0878204   0.0373649
-     0.0         0.0         0.0           0.036031    0.0373649   0.0878204
-
-
-</code></pre><pre><code class="language-julia">isposdef(matrix)</code></pre><pre><code class="language-text">
-    true
-
-
-</code></pre><pre><code class="language-julia">θₜ = [209401.23928068715, 0.55, 3.88, 2.125677794326631e6, 6000]
-println(nlml(θₜ))
-
-g = Stheno.GP(θₜ[4], θₜ[1] * stretch(EQ(), 1 / θₜ[2]^2) * Stheno.Cosine(θₜ[3] / 2), Stheno.GPC())
-
-x = t
-y = rand(g(x, θₜ[5]))
-
-close()
-plot(x, y; color)</code></pre><p><img src="../EQP_files/EQP_8_0.png" alt="png"/></p><pre><code class="language-text">
-    21192.89377199526
-
-
-
-
-
-    1-element Array{PyObject,1}:
-     PyObject &lt;matplotlib.lines.Line2D object at 0x7f6188c60580&gt;
-
-
-</code></pre><pre><code class="language-julia">P = range(2, 10; step = 0.1)
+</code></pre></details><br><p>The following cells will be removed later.</p><pre><code class="language-julia">P = range(2, 10; step = 0.1)
 for (i, Pᵢ) in enumerate(P)
     θₜ = [209401.23928068715, 0.55, Pᵢ, 2.125677794326631e6, 6000]
-    g = Stheno.GP(θₜ[4], θₜ[1] * stretch(EQ(), 1 / θₜ[2]^2) * Stheno.Cosine(θₜ[3] / 2), Stheno.GPC())
+    g = Stheno.GP(θₜ[4], θₜ[1] * stretch(Stheno.EQ(), 1 / θₜ[2]^2) * Stheno.Cosine(θₜ[3] / 2), Stheno.GPC())
     println(Pᵢ, &quot; &quot;^3, -logpdf(g(t, θₜ[5]), f))
 end</code></pre><pre><code class="language-text">
     2.0   21220.748207337296
@@ -566,7 +517,7 @@ end</code></pre><pre><code class="language-text">
 </code></pre><pre><code class="language-julia">σ² = range(6000, 7000; step = 10)
 for (i, σ²ᵢ) in enumerate(σ²)
     θₜ = [209401.23928068715, 0.55, 3.88, 2.125677794326631e6, σ²ᵢ]
-    g = Stheno.GP(θₜ[4], θₜ[1] * stretch(EQ(), 1 / θₜ[2]^2) * Stheno.Cosine(θₜ[3] / 2), Stheno.GPC())
+    g = Stheno.GP(θₜ[4], θₜ[1] * stretch(Stheno.EQ(), 1 / θₜ[2]^2) * Stheno.Cosine(θₜ[3] / 2), Stheno.GPC())
     println(σ²ᵢ, &quot; &quot;^3, -logpdf(g(t, θₜ[5]), f))
 end</code></pre><pre><code class="language-text">
     6000   21192.89377199526
@@ -670,4 +621,4 @@ end</code></pre><pre><code class="language-text">
     6980   21207.4217385759
     6990   21207.71186419196
     7000   21208.004291996367
-</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../KIC1430163/">« Preamble</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 30 August 2020 14:49">Sunday 30 August 2020</span>. Using Julia version 1.5.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../KIC1430163/">« Preamble</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 30 August 2020 17:22">Sunday 30 August 2020</span>. Using Julia version 1.5.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
