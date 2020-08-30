@@ -52,7 +52,7 @@ savefig(&quot;figures/EQ.pdf&quot;, bbox_inches = &quot;tight&quot;)
 println(&quot;Negative log marginal likelihood: &quot;, nlml(θ))</code></pre><p><img src="../EQP_files/EQP_2_0.png" alt="png"/></p><pre><code class="language-text">
     Negative log marginal likelihood: 21253.239040160737
 
-</code></pre><p>Finally, let&#39;s optimize the negative log marginal likelihood function. This process can take quite a lot of time (it was likely aborted manually at some point), so the output of the optimizer is very large and therefore placed under the spoiler.</p><pre><code class="language-julia">θ₀ = [σ²₀, 0.55, 3.88, μ₀, 6000]
+</code></pre></details><br><p>Finally, let&#39;s optimize the negative log marginal likelihood function. This process can take quite a lot of time (it was likely aborted manually at some point), so the output of the optimizer is very large and therefore placed under the spoiler.</p><pre><code class="language-julia">θ₀ = [σ²₀, 0.55, 3.88, μ₀, 6000]
 θₗ = [209000.0, 0.45, 3.0, 2125650.0, 5950.0]
 θᵤ = [210000.0, 0.7, 4.5, 2125750.0, 6050.0]
 results = Optim.optimize(
@@ -69,7 +69,8 @@ results = Optim.optimize(
         store_trace = false,
     );
     inplace = false,
-)</code></pre><pre><code class="language-text">
+)</code></pre><details>
+<summary>Optimizer output</summary><pre><code class="language-text">
     Fminbox
     -------
     Initial mu = 0.0205539
@@ -417,90 +418,7 @@ results = Optim.optimize(
      * g(x): [0.00023824985260963784, 0.0037585377261130826, -2.4297944464695354, 0.0014138094044477672, 0.0055689593886407455]
      * x: [209000.00000000003, 0.5153777843973287, 4.499999999999999, 2.1256742144973245e6, 5950.001700002523]
 
-
-
-    InterruptException:
-
-    
-
-    Stacktrace:
-
-     [1] reshape at ./reshapedarray.jl:51 [inlined]
-
-     [2] reshape at ./reshapedarray.jl:111 [inlined]
-
-     [3] reshape at ./reshapedarray.jl:141 [inlined]
-
-     [4] _maybe_reshape_parent at ./subarray.jl:120 [inlined]
-
-     [5] view at ./subarray.jl:159 [inlined]
-
-     [6] maybeview at ./views.jl:133 [inlined]
-
-     [7] dotview at ./broadcast.jl:1160 [inlined]
-
-     [8] (::Zygote.var&quot;#829#830&quot;{LinearAlgebra.Symmetric{Float64,Array{Float64,2}},LinearAlgebra.Cholesky{Float64,Array{Float64,2}}})(::NamedTuple{(:uplo, :info, :factors),Tuple{Nothing,Nothing,Array{Float64,2}}}) at /home/paveloom/.julia/packages/Zygote/seGHk/src/lib/array.jl:534
-
-     [9] (::Zygote.var&quot;#3242#back#831&quot;{Zygote.var&quot;#829#830&quot;{LinearAlgebra.Symmetric{Float64,Array{Float64,2}},LinearAlgebra.Cholesky{Float64,Array{Float64,2}}}})(::NamedTuple{(:uplo, :info, :factors),Tuple{Nothing,Nothing,Array{Float64,2}}}) at /home/paveloom/.julia/packages/ZygoteRules/6nssF/src/adjoint.jl:49
-
-     [10] logpdf at /home/paveloom/.julia/packages/Stheno/II2B3/src/abstract_gp.jl:198 [inlined]
-
-     [11] (::typeof(∂(logpdf)))(::Array{Float64,1}) at /home/paveloom/.julia/packages/Zygote/seGHk/src/compiler/interface2.jl:0
-
-     [12] logpdf at /home/paveloom/.julia/packages/Stheno/II2B3/src/abstract_gp.jl:195 [inlined]
-
-     [13] (::typeof(∂(logpdf)))(::Float64) at /home/paveloom/.julia/packages/Zygote/seGHk/src/compiler/interface2.jl:0
-
-     [14] nlml at ./In[16]:14 [inlined]
-
-     [15] (::typeof(∂(nlml)))(::Float64) at /home/paveloom/.julia/packages/Zygote/seGHk/src/compiler/interface2.jl:0
-
-     [16] (::Zygote.var&quot;#41#42&quot;{typeof(∂(nlml))})(::Float64) at /home/paveloom/.julia/packages/Zygote/seGHk/src/compiler/interface.jl:45
-
-     [17] gradient(::Function, ::Array{Float64,1}) at /home/paveloom/.julia/packages/Zygote/seGHk/src/compiler/interface.jl:54
-
-     [18] (::var&quot;#17#18&quot;)(::Array{Float64,1}) at ./In[185]:12
-
-     [19] (::Optim.var&quot;#48#49&quot;{var&quot;#17#18&quot;})(::Array{Float64,1}, ::Array{Float64,1}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/solvers/constrained/fminbox.jl:150
-
-     [20] fg! at /home/paveloom/.julia/packages/NLSolversBase/mGaJg/src/objective_types/abstract.jl:13 [inlined]
-
-     [21] function_barrier(::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}, ::NLSolversBase.var&quot;#fg!#8&quot;{typeof(nlml),Optim.var&quot;#48#49&quot;{var&quot;#17#18&quot;}}, ::Optim.var&quot;#60#66&quot;{Array{Float64,1},Array{Float64,1}}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/solvers/constrained/fminbox.jl:56
-
-     [22] (::Optim.var&quot;#61#67&quot;{OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}},Optim.var&quot;#60#66&quot;{Array{Float64,1},Array{Float64,1}}})(::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/solvers/constrained/fminbox.jl:196
-
-     [23] barrier_combined(::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}, ::Optim.var&quot;#61#67&quot;{OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}},Optim.var&quot;#60#66&quot;{Array{Float64,1},Array{Float64,1}}}, ::Base.RefValue{Float64}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/solvers/constrained/fminbox.jl:61
-
-     [24] (::Optim.var&quot;#63#69&quot;{Optim.var&quot;#61#67&quot;{OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}},Optim.var&quot;#60#66&quot;{Array{Float64,1},Array{Float64,1}}},Array{Float64,1},Array{Float64,1},Base.RefValue{Float64}})(::Array{Float64,1}, ::Array{Float64,1}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/solvers/constrained/fminbox.jl:254
-
-     [25] value_gradient!!(::OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}, ::Array{Float64,1}) at /home/paveloom/.julia/packages/NLSolversBase/mGaJg/src/interface.jl:82
-
-     [26] value_gradient!(::OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}, ::Array{Float64,1}) at /home/paveloom/.julia/packages/NLSolversBase/mGaJg/src/interface.jl:69
-
-     [27] value_gradient!(::Optim.ManifoldObjective{OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}}, ::Array{Float64,1}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/Manifolds.jl:50
-
-     [28] (::LineSearches.var&quot;#ϕdϕ#6&quot;{Optim.ManifoldObjective{OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}},Array{Float64,1},Array{Float64,1},Array{Float64,1}})(::Float64) at /home/paveloom/.julia/packages/LineSearches/WrsMD/src/LineSearches.jl:84
-
-     [29] (::LineSearches.HagerZhang{Float64,Base.RefValue{Bool}})(::Function, ::LineSearches.var&quot;#ϕdϕ#6&quot;{Optim.ManifoldObjective{OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}},Array{Float64,1},Array{Float64,1},Array{Float64,1}}, ::Float64, ::Float64, ::Float64) at /home/paveloom/.julia/packages/LineSearches/WrsMD/src/hagerzhang.jl:236
-
-     [30] HagerZhang at /home/paveloom/.julia/packages/LineSearches/WrsMD/src/hagerzhang.jl:101 [inlined]
-
-     [31] perform_linesearch!(::Optim.LBFGSState{Array{Float64,1},Array{Array{Float64,1},1},Array{Array{Float64,1},1},Float64,Array{Float64,1}}, ::LBFGS{Optim.InverseDiagonal,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#62#68&quot;{Array{Float64,1},Array{Float64,1},Fminbox{LBFGS{Nothing,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#19#21&quot;},Float64,Optim.var&quot;#43#45&quot;},Base.RefValue{Float64}}}, ::Optim.ManifoldObjective{OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/utilities/perform_linesearch.jl:53
-
-     [32] update_state!(::OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}, ::Optim.LBFGSState{Array{Float64,1},Array{Array{Float64,1},1},Array{Array{Float64,1},1},Float64,Array{Float64,1}}, ::LBFGS{Optim.InverseDiagonal,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#62#68&quot;{Array{Float64,1},Array{Float64,1},Fminbox{LBFGS{Nothing,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#19#21&quot;},Float64,Optim.var&quot;#43#45&quot;},Base.RefValue{Float64}}}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/solvers/first_order/l_bfgs.jl:198
-
-     [33] optimize(::OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}, ::Array{Float64,1}, ::LBFGS{Optim.InverseDiagonal,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#62#68&quot;{Array{Float64,1},Array{Float64,1},Fminbox{LBFGS{Nothing,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#19#21&quot;},Float64,Optim.var&quot;#43#45&quot;},Base.RefValue{Float64}}}, ::Optim.Options{Float64,Nothing}, ::Optim.LBFGSState{Array{Float64,1},Array{Array{Float64,1},1},Array{Array{Float64,1},1},Float64,Array{Float64,1}}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/optimize/optimize.jl:57
-
-     [34] optimize(::OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}, ::Array{Float64,1}, ::LBFGS{Optim.InverseDiagonal,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#62#68&quot;{Array{Float64,1},Array{Float64,1},Fminbox{LBFGS{Nothing,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#19#21&quot;},Float64,Optim.var&quot;#43#45&quot;},Base.RefValue{Float64}}}, ::Optim.Options{Float64,Nothing}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/optimize/optimize.jl:33
-
-     [35] optimize(::OnceDifferentiable{Float64,Array{Float64,1},Array{Float64,1}}, ::Array{Float64,1}, ::Array{Float64,1}, ::Array{Float64,1}, ::Fminbox{LBFGS{Nothing,LineSearches.InitialStatic{Float64},LineSearches.HagerZhang{Float64,Base.RefValue{Bool}},Optim.var&quot;#19#21&quot;},Float64,Optim.var&quot;#43#45&quot;}, ::Optim.Options{Float64,Nothing}) at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/solvers/constrained/fminbox.jl:283
-
-     [36] #optimize#47 at /home/paveloom/.julia/packages/Optim/UkDyx/src/multivariate/solvers/constrained/fminbox.jl:153 [inlined]
-
-     [37] top-level scope at In[185]:10
-
-     [38] include_string(::Function, ::Module, ::String, ::String) at ./loading.jl:1091
-</code></pre><p>The following cells will be removed later.</p><pre><code class="language-julia">using LinearAlgebra</code></pre><pre><code class="language-julia">θ₀ = [0.03782039385618707, 27.800588611994993, 4.025972513638813 / 2]
+</code></pre></details><br><p>The following cells will be removed later.</p><pre><code class="language-julia">using LinearAlgebra</code></pre><pre><code class="language-julia">θ₀ = [0.03782039385618707, 27.800588611994993, 4.025972513638813 / 2]
 g = Stheno.GP(θ₀[1] * EQC(θ₀[2]) * Stheno.Cosine(θ₀[3]), Stheno.GPC())
 
 matrix = cov(g(t, 0.05))</code></pre><pre><code class="language-text">
@@ -752,4 +670,4 @@ end</code></pre><pre><code class="language-text">
     6980   21207.4217385759
     6990   21207.71186419196
     7000   21208.004291996367
-</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../KIC1430163/">« Preamble</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 30 August 2020 13:23">Sunday 30 August 2020</span>. Using Julia version 1.5.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../KIC1430163/">« Preamble</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Sunday 30 August 2020 14:41">Sunday 30 August 2020</span>. Using Julia version 1.5.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
