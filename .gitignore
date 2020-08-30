@@ -10,3 +10,6 @@ Makefile
 # Directories created when generating documentation
 docs/build
 docs/src/generated
+
+# Jupyter's checkpoint files
+*ipynb_checkpoints

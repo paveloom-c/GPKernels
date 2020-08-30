@@ -67,30 +67,42 @@ for (index, notebook) in enumerate(notebooks)
     inside_output_block = false
     last_index = size(lines, 1)
 
-    # Put the text output in the text block
+    # Put the text output in the text blocks
     for (index, line) in enumerate(lines)
 
+        # Condition of entering the code block
         if startswith(line, "```julia") && !inside_julia_block
-            inside_julia_block = true
+
+            # Condition to complete the output block
             if inside_output_block
                 lines[index - 1] = "```\n"
                 inside_output_block = false
             end
-            continue
+
+            inside_julia_block = true
+
+        # Condition of exiting the code block
         elseif startswith(line, "```") && inside_julia_block
+
             inside_julia_block = false
-            continue
-        end
 
-        if !inside_output_block && !inside_julia_block  && !isempty(line) #=
-        =# && !startswith(line, "![png]") && !startswith(line, "![svg]")
-            inside_output_block = true
+        # Condition to complete the output block
+        elseif inside_output_block && !isempty(line) && !startswith(line, "    ")
+
+            lines[index - 1] = "```\n"
+            inside_output_block = false
+
+        # Condition for starting the output block
+        elseif !inside_output_block && !inside_julia_block  && startswith(line, "    ")
+
             lines[index - 1] = "\n```text\n"
-            continue
-        end
+            inside_output_block = true
 
-        if inside_output_block && index == last_index
+        # Condition on the last line of the last block of output
+        elseif inside_output_block && index == last_index
+
             lines[index] = "\n```"
+
         end
 
     end
