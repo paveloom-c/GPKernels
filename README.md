@@ -3,8 +3,10 @@
 ### What is this?
 
 This is a repository of a project to investigate the influence of the selection of kernels
-for Gaussian processes on the process of modeling light curves of different objects from
-the Kepler Archive. For more information on the research, see the
+for [Gaussian processes](https://en.wikipedia.org/wiki/Gaussian_process) on the process of
+modeling light curves of different objects from the
+[Kepler Archive](https://archive.stsci.edu/kepler/data_search/search.php). For more
+information on the research, see the
 [online documentation](https://paveloom-c.github.io/GPKernels).
 
 ### Wait, why isn't this branch called `master`/`main`?
