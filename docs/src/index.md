@@ -18,13 +18,13 @@ These are the [F-type stars](https://en.wikipedia.org/wiki/F-type_main-sequence_
 mentioned in the paper
 [Mathur et al. (2014)](https://www.mendeley.com/catalogue/6be7d4d7-360f-3acb-9fc5-941020e088da/).
 They have published rotation periods, which are interesting to use when testing models. See
-more about object identifiers on the `IDs` page.
+more about object identifiers on the [`IDs`](@ref IDs) page.
 
 ### Models, huh? What do they look like?
 
 Essentially it's a combination of a periodic kernel, some kernel adding attenuation,
-and white noise. That is, these are models of a quasi-periodic process. See the `IDs` page
-for a complete list of models used.
+and white noise. That is, these are models of a quasi-periodic process. See the
+[`IDs`](@ref IDs) page for a complete list of models used.
 
 ### What do I do next from here?
 

@@ -14,6 +14,7 @@ makedocs(
     # Specify the pages on the left side
     pages = [
         "Home" => "index.md",
+        "IDs" => "ids.md",
         "Notebooks" => [
             "$preamble" => pushfirst!(
                 map(
