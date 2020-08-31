@@ -17,9 +17,6 @@ julia -e 'using Pkg; Pkg.add("Optim"); using Optim' >/dev/null 2>&1
 echo '\e[1;36m> Installing `PyCall`...\e[0m'
 julia -e 'using Pkg; Pkg.add("PyCall"); using PyCall' >/dev/null 2>&1
 
-echo '\e[1;36m> Installing `Soss`...\e[0m'
-julia -e 'using Pkg; Pkg.add("Soss"); using Soss' >/dev/null 2>&1
-
 echo '\e[1;36m> Installing `Statistics`...\e[0m'
 julia -e 'using Pkg; Pkg.add("Statistics"); using Statistics' >/dev/null 2>&1
 
