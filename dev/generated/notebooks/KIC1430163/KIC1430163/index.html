@@ -66,7 +66,7 @@ color = &quot;#425378&quot;;</code></pre><p>Okay, now all the power of TeX is un
 
 xlabel(L&quot;\textrm{Time, days}&quot;)
 ylabel(L&quot;\textrm{Flux}&quot;)
-title(latexstring(&quot;\\textrm{Time Series of KIC $KIC_ID}&quot;));</code></pre><p><img src="../KIC1430163_files/KIC1430163_3_0.png" alt="png"/></p><p>These sharp leaps are associated with the inconsistency of observational periods. Let&#39;s pick one of the quarters:</p><pre><code class="language-julia"># Create a mask to select one of successive periods of observation
+title(latexstring(&quot;\\textrm{Time series of KIC $KIC_ID}&quot;));</code></pre><p><img src="../KIC1430163_files/KIC1430163_3_0.png" alt="png"/></p><p>These sharp leaps are associated with the inconsistency of observational periods. Let&#39;s pick one of the quarters:</p><pre><code class="language-julia"># Create a mask to select one of successive periods of observation
 mask = (tₐ .≥ 443.5105) .&amp; (tₐ .≤ 537.5502295)
 
 # Use the mask
@@ -75,7 +75,7 @@ const t = tₘ .- mean(tₘ)
 const f = fₐ[mask]
 const fσ = fσₐ[mask]
 
-# An auxiliary variable for the general shift of text output to the right
+# An auxiliary variable for the general shift of text output to the left
 pad = 30
 
 println(rpad(&quot;General info:&quot;, pad))
@@ -84,8 +84,11 @@ println(rpad(&quot;Size of the subset:&quot;, pad), size(t, 1))
 const μ₀ = mean(f)
 println(rpad(&quot;Mean of the flux: &quot;, pad), μ₀)
 
-const σ²₀ = var(f)
-println(rpad(&quot;Variance of the subset: &quot;, pad), σ²₀)
+const A₀ = var(f)
+println(rpad(&quot;Variance of the flux: &quot;, pad), A₀)
+
+const σ²ₑ = var(fσ)
+println(rpad(&quot;Variance of the errors: &quot;, pad), σ²ₑ)
 
 # Calculating the mean of the time differences between observations
 Δt = []
@@ -98,7 +101,8 @@ println(rpad(&quot;Mean of the time differences:&quot;, pad), Δμ)</code></pre>
     General info:                 
     Size of the subset:           3518
     Mean of the flux:             2.125678e6
-    Variance of the subset:       209401.3
+    Variance of the flux:         209401.3
+    Variance of the errors:       0.0028263223
     Mean of the time differences: 0.026616617260856176
 
 </code></pre><p>That will be enough. Let&#39;s look at the time series:</p><pre><code class="language-julia">close()
@@ -106,7 +110,7 @@ plot(t, f, color)
 
 xlabel(L&quot;\textrm{Time, days}&quot;)
 ylabel(L&quot;\textrm{Flux}&quot;)
-title(L&quot;\textrm{Time Series of the 5th Quarter}&quot;);</code></pre><p><img src="../KIC1430163_files/KIC1430163_5_0.png" alt="png"/></p><p>Gaussian processes are cool, of course, but the models they will use will require initial values. Some of these have already been identified before (mean and variance), but we will also need an estimate of the period. Let&#39;s go the classic way and make this estimate by determining the peak position on the Lomb-Scargle periodogram.</p><pre><code class="language-julia"># Choose a set of frequencies
+title(L&quot;\textrm{Time series of the 5th quarter}&quot;);</code></pre><p><img src="../KIC1430163_files/KIC1430163_5_0.png" alt="png"/></p><p>Gaussian processes are cool, of course, but the models they will use will require initial values. Some of these have already been determined before (mean and variance), but we will also need an estimate of the period. Let&#39;s go the classic way and make this estimate by determining the peak position on the Lomb-Scargle periodogram.</p><pre><code class="language-julia"># Choose a set of frequencies
 frequencies = range(1 / size(t, 1) + 0.0003, 1.0; length = 5000)
 
 # Pre-plan the Lomb–Scargle periodogram
@@ -127,7 +131,7 @@ P₀ = 1 / νₘ
 close()
 plot(ν, P; color)
 
-title(L&quot;\textrm{Lomb-Scargle Periodogram}&quot;)
+title(L&quot;\textrm{Lomb-Scargle periodogram}&quot;)
 xlabel(L&quot;\textrm{Frequency, days}^{-1}&quot;)
 ylabel(L&quot;\textrm{Power}&quot;)
 
@@ -142,7 +146,7 @@ The relevant estimate of the period is $(P₀).&quot;&quot;&quot;)</code></pre><
 </code></pre><p>Here&#39;s another look at it, just with a logarithmic scale:</p><pre><code class="language-julia">close()
 plot(ν, P; color)
 
-title(L&quot;\textrm{Lomb-Scargle Periodogram}&quot;)
+title(L&quot;\textrm{Lomb-Scargle periodogram}&quot;)
 xlabel(L&quot;\textrm{Frequency (log scale), days}^{-1}&quot;)
 ylabel(L&quot;\textrm{Power}&quot;)
-xscale(&quot;log&quot;)</code></pre><p><img src="../KIC1430163_files/KIC1430163_7_0.png" alt="png"/></p><p>Yeah, close the plot. It&#39;s just good practice. This ends the preamble to this object, and we can now proceed with tests of different models for Gaussian processes. Click on any of the model IDs in the sidebar to continue.</p><pre><code class="language-julia">close()</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../../../ids/">« IDs</a><a class="docs-footer-nextpage" href="../EQP/EQP/">EQP »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Monday 31 August 2020 18:41">Monday 31 August 2020</span>. Using Julia version 1.5.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+xscale(&quot;log&quot;)</code></pre><p><img src="../KIC1430163_files/KIC1430163_7_0.png" alt="png"/></p><p>Yeah, close the plot. It&#39;s just good practice. This ends the preamble to this object, and we can now proceed with tests of different models for Gaussian processes. Click on any of the model IDs in the sidebar to continue. If you&#39;re not sure what they mean, check out the <a href="../../../../ids/#IDs"><code>IDs</code></a> page.</p><pre><code class="language-julia">close()</code></pre></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../../../../ids/">« IDs</a><a class="docs-footer-nextpage" href="../EQP/EQP/">EQP »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> on <span class="colophon-date" title="Wednesday 2 September 2020 14:02">Wednesday 2 September 2020</span>. Using Julia version 1.5.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
