@@ -30,3 +30,9 @@ and white noise. That is, these are models of a quasi-periodic process. See the
 
 Well, there's a section on the sidebar with all the notebooks, maybe that's worth checking
 out.
+
+### Wait, notebooks?
+
+Yes, Jupyter Notebooks converted to HTML pages. Their two main types in this work are
+_preambles_, which contain data about an object, and _models_, which contain the process
+of modeling a given time series. Accordingly, they are organized by these identifiers.

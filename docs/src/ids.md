@@ -1,5 +1,7 @@
 # [Object and model identifiers](@id IDs)
 
+This page lists all the objects and models used in this study.
+
 ### Objects
 
 * [KIC 1430163](https://archive.stsci.edu/kepler/data_search/search.php?target=1430163&action=Search&outputformat=HTML_Table):
