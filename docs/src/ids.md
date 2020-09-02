@@ -1,3 +1,7 @@
+```@meta
+EditURL = "nothing"
+```
+
 # [Object and model identifiers](@id IDs)
 
 This page lists all the objects and models used in this study.
