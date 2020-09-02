@@ -11,6 +11,7 @@ env:
 branches:
   only:
   - notebooks
+  - /^v\d+\.\d+\.\d+.*$/
 
 jobs:
   include:
