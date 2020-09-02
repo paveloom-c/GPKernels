@@ -60,7 +60,7 @@ md_lines_preamble = Dict{Int, String}(
 
         7 => """
         Gaussian processes are cool, of course, but the models they will use will require
-        initial values. Some of these have already been identified before (mean and
+        initial values. Some of these have already been determined before (mean and
         variance), but we will also need an estimate of the period. Let's go the classic
         way and make this estimate by determining the peak position on the Lomb-Scargle
         periodogram.
@@ -73,7 +73,8 @@ md_lines_preamble = Dict{Int, String}(
         9 => """
         Yeah, close the plot. It's just good practice. This ends the preamble to this
         object, and we can now proceed with tests of different models for Gaussian
-        processes. Click on any of the model IDs in the sidebar to continue.
+        processes. Click on any of the model IDs in the sidebar to continue. If you're not
+        sure what they mean, check out the [`IDs`](@ref IDs) page.
         """,
     ]
 )
@@ -87,8 +88,8 @@ md_lines_kernel = Dict{Int, String}(
 
         2 => """
         Let's define a function for calculating the negative log marginal likelihood and an
-        auxiliary function for unpacking the tuple of parameters. See the `IDs` page on the
-        sidebar for decrypting model IDs.
+        auxiliary function for unpacking the tuple of parameters. See the [`IDs`](@ref IDs)
+        page on the sidebar for decrypting model IDs.
         """,
 
         3 => """
@@ -99,9 +100,25 @@ md_lines_kernel = Dict{Int, String}(
         """,
 
         4 => """
-        Finally, let's optimize the negative log marginal likelihood function. This process
-        can take quite a lot of time (it was likely aborted manually at some point), so the
-        output of the optimizer is very large and therefore placed under the spoiler.
+        Let's optimize the negative log marginal likelihood function. This process
+        can take quite a lot of time, so the output of the optimizer is very large and
+        therefore placed under the spoiler. Don't mind the failure, by the way. It's
+        because of the prohibition of the BFGS solver from getting out of the pits.
+        """,
+
+        5 => """
+        Now let's create a plot similar to the previous one using a set of parameters
+        obtained during the optimization process.
+        """,
+
+        6 => """
+        We can now compare this realization of the Gaussian process with the original
+        time series for similarity of characteristics. This is for a test of matching our
+        subjective opinion of similarity with the objective result of the solver.
+        """,
+
+        7 => """
+        This ends the notebook about this model. There are others on the sidebar.
         """,
     ]
 )
