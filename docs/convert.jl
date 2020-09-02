@@ -191,7 +191,7 @@ for (index, notebook) in enumerate(notebooks)
             if inside_output_block
 
                 # Condition of placing the end of a spoiler (before a block of code)
-                if about_kernel && code_block == 4
+                if about_kernel && code_block == 5
                     lines[index - 1] = """
                     ```
                     ```@raw html
