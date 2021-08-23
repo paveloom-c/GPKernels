@@ -1,0 +1,19 @@
+[deps]
+GRUtils = "0337cf30-a0fd-11e9-31db-a79914c9d7ac"
+LombScargle = "fc60dff9-86e7-5f2f-a8a0-edeadbb75bd9"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+Stheno = "8188c328-b5d6-583d-959b-9690869a5511"
+Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
+
+[compat]
+GRUtils = "=0.6.2"
+LombScargle = "=1.0.2"
+Optim = "=1.4.1"
+PyCall = "=1.92.3"
+PyPlot = "=2.9.0"
+Stheno = "=0.7.13"
+Zygote = "=0.6.20"
+julia = "~1.6.2"
