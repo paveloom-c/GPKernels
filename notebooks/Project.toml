@@ -1,6 +1,9 @@
 [deps]
+AbstractGPs = "99985d1d-32ba-4be9-9821-2ec096f28918"
 GRUtils = "0337cf30-a0fd-11e9-31db-a79914c9d7ac"
+KernelFunctions = "ec8451be-7e33-11e9-00cf-bbf324bd1392"
 LombScargle = "fc60dff9-86e7-5f2f-a8a0-edeadbb75bd9"
+NBInclude = "0db19996-df87-5ea3-a455-e3a50d440464"
 Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
@@ -10,7 +13,9 @@ Zygote = "e88e6eb3-aa80-5325-afca-941959d7151f"
 
 [compat]
 GRUtils = "=0.6.2"
+KernelFunctions = "=0.10.16"
 LombScargle = "=1.0.2"
+NBInclude = "=2.2.0"
 Optim = "=1.4.1"
 PyCall = "=1.92.3"
 PyPlot = "=2.9.0"
